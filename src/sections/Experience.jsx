@@ -17,7 +17,7 @@ export default function Experience() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Internship */}
-          <div className="lg:col-span-7 flex flex-col">
+          <div className="lg:col-span-7 flex flex-col scroll-reveal">
             <div className="p-6 sm:p-8 rounded-2xl bg-surface border border-surface-border shadow-card flex-1 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 text-xs font-mono text-text-subtle mb-3">
@@ -57,7 +57,7 @@ export default function Experience() {
           {/* Right Column: Hackathon Winner & Certifications */}
           <div className="lg:col-span-5 flex flex-col gap-6">
             {/* Hackathon Award Card */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 via-surface to-surface border border-amber-500/30 shadow-card">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 via-surface to-surface border border-amber-500/30 shadow-card scroll-reveal stagger-1">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
                   <Trophy className="w-5 h-5" />
@@ -81,7 +81,7 @@ export default function Experience() {
             </div>
 
             {/* Certifications Card */}
-            <div className="p-6 rounded-2xl bg-surface border border-surface-border shadow-card flex-1">
+            <div className="p-6 rounded-2xl bg-surface border border-surface-border shadow-card flex-1 scroll-reveal stagger-2">
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-surface-border-subtle">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-text-primary" />

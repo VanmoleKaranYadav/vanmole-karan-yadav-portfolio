@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function SectionHeader({ eyebrow, title, subtitle, className = '' }) {
   return (
-    <div className={`mb-12 ${className}`}>
+    <div className={`mb-12 scroll-reveal ${className}`}>
       {eyebrow && (
         <p className="text-xs uppercase tracking-widest font-mono font-semibold text-text-subtle mb-2">
           {eyebrow}

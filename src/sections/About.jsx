@@ -18,7 +18,7 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Bio & Core Pillars */}
           <div className="lg:col-span-7 flex flex-col gap-6">
-            <div className="p-6 rounded-2xl bg-surface border border-surface-border shadow-card">
+            <div className="p-6 rounded-2xl bg-surface border border-surface-border shadow-card scroll-reveal">
               <p className="text-base sm:text-lg text-text-primary leading-relaxed">
                 {about.lead}
               </p>
@@ -26,10 +26,10 @@ export default function About() {
 
             {/* Core Pillars */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {about.pillars.map((pillar) => (
+              {about.pillars.map((pillar, idx) => (
                 <div
                   key={pillar.num}
-                  className="p-5 rounded-xl bg-surface border border-surface-border hover:border-surface-hover transition-colors flex flex-col justify-between"
+                  className={`p-5 rounded-xl bg-surface border border-surface-border hover:border-surface-hover transition-colors flex flex-col justify-between scroll-reveal stagger-${idx + 1}`}
                 >
                   <div>
                     <span className="font-mono text-xs font-bold text-text-subtle mb-2 block">
@@ -47,7 +47,7 @@ export default function About() {
             </div>
 
             {/* Quick Facts Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 scroll-reveal stagger-3">
               <div className="p-3.5 rounded-lg bg-surface-subtle border border-surface-border">
                 <span className="text-[10px] uppercase font-mono text-text-subtle block mb-1">
                   Primary Focus
@@ -87,7 +87,7 @@ export default function About() {
           </div>
 
           {/* Right Column: Academic Details Timeline */}
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-5 scroll-reveal stagger-2">
             <div className="p-6 rounded-2xl bg-surface border border-surface-border shadow-card">
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-surface-border-subtle">
                 <div className="flex items-center gap-2">

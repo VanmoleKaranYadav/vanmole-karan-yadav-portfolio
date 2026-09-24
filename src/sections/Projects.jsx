@@ -20,7 +20,7 @@ export default function Projects() {
           {projects.map((project) => (
             <article
               key={project.id}
-              className="p-6 sm:p-8 rounded-3xl bg-surface border border-surface-border hover:border-surface-hover shadow-card transition-all duration-300"
+              className="p-6 sm:p-8 rounded-3xl bg-surface border border-surface-border hover:border-surface-hover shadow-card transition-all duration-300 scroll-reveal"
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 {/* Left details */}

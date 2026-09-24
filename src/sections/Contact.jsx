@@ -112,7 +112,7 @@ export default function Contact() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Column: Interactive Contact Form */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 scroll-reveal">
             <div className="p-6 sm:p-8 rounded-3xl bg-surface border border-surface-border shadow-card">
               <h3 className="text-xl font-bold text-text-primary mb-2">
                 Send a Message
@@ -261,7 +261,7 @@ export default function Contact() {
           </div>
 
           {/* Right Column: Direct Channels & Resume Card */}
-          <div className="lg:col-span-5 flex flex-col gap-4">
+          <div className="lg:col-span-5 flex flex-col gap-4 scroll-reveal stagger-2">
             {/* Email Card */}
             <a
               href={`mailto:${portfolioData.email}`}

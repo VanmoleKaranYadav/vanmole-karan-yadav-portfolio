@@ -25,13 +25,13 @@ export default function Skills() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {skillsCategories.map((category) => {
+          {skillsCategories.map((category, idx) => {
             const IconComponent = iconMap[category.icon] || Code2;
 
             return (
               <div
                 key={category.title}
-                className="p-6 rounded-2xl bg-surface border border-surface-border hover:border-surface-hover hover:shadow-card transition-all duration-200 flex flex-col justify-between"
+                className={`p-6 rounded-2xl bg-surface border border-surface-border hover:border-surface-hover hover:shadow-card transition-all duration-300 flex flex-col justify-between scroll-reveal-scale stagger-${(idx % 3) + 1}`}
               >
                 <div>
                   <div className="flex items-center gap-3 mb-4">
