@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Portfolio of Vanmole Karan Yadav — Computer Science & Engineering student, Full-Stack Developer, and AI enthusiast." />
+    <meta name="author" content="Vanmole Karan Yadav" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Vanmole Karan Yadav | Software Developer Portfolio</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Zero-FOUC Theme Initialization -->
+    <script>
+      (function () {
+        const storedTheme = localStorage.getItem("portfolio-theme");
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const initialTheme = storedTheme ? storedTheme : (systemPrefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", initialTheme);
+        if (initialTheme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-background text-text-primary antialiased min-h-screen selection:bg-neutral-800 selection:text-white dark:selection:bg-white dark:selection:text-neutral-950">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
