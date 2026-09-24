@@ -8,61 +8,61 @@ import {
   Linkedin,
   Github,
   ArrowUpRight,
-  Send,
   CheckCircle,
   AlertCircle,
   FileText,
   Copy,
   Check,
   MessageCircle,
-  ExternalLink,
 } from 'lucide-react';
 
-const SUBJECT_PRESETS = [
-  '💼 Job Opportunity',
-  '🤝 Project Collaboration',
-  '💬 General Inquiry',
-  '👋 Saying Hi',
-];
+// Reliable form submission endpoint for static React/Vite applications
+// Delivers messages directly to vanmolekaranyadav@gmail.com without needing a backend server
+const FORM_ENDPOINT =
+  import.meta.env.VITE_CONTACT_ENDPOINT ||
+  'https://formsubmit.co/ajax/vanmolekaranyadav@gmail.com';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
     message: '',
+    _honey: '', // Honeypot field for bot spam prevention
   });
-
-  const [submittedData, setSubmittedData] = useState(null);
 
   const [status, setStatus] = useState({
     submitting: false,
     success: false,
     error: null,
-    source: null,
+    needsActivation: false,
   });
 
   const [fieldErrors, setFieldErrors] = useState({});
   const [copiedEmail, setCopiedEmail] = useState(false);
 
+  // Client-side validation: Name, Email format, Message not empty
   const validate = () => {
     const errors = {};
-    if (!formData.name.trim()) {
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedMessage = formData.message.trim();
+
+    if (!trimmedName) {
       errors.name = 'Please enter your name.';
-    } else if (formData.name.trim().length < 2) {
+    } else if (trimmedName.length < 2) {
       errors.name = 'Name must be at least 2 characters.';
     }
 
-    if (!formData.email.trim()) {
+    if (!trimmedEmail) {
       errors.email = 'Please enter your email address.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       errors.email = 'Please enter a valid email address.';
     }
 
-    if (!formData.message.trim()) {
+    if (!trimmedMessage) {
       errors.message = 'Please enter your message.';
-    } else if (formData.message.trim().length < 5) {
-      errors.message = 'Message must be at least 5 characters long.';
+    } else if (trimmedMessage.length < 5) {
+      errors.message = 'Message must be at least 5 characters.';
     }
 
     return errors;
@@ -77,13 +77,6 @@ export default function Contact() {
     if (status.error) {
       setStatus((prev) => ({ ...prev, error: null }));
     }
-  };
-
-  const handleSelectPreset = (preset) => {
-    setFormData((prev) => ({
-      ...prev,
-      subject: prev.subject === preset ? '' : preset,
-    }));
   };
 
   const handleCopyEmail = async (e) => {
@@ -101,103 +94,85 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const errors = validate();
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
+    // Honeypot spam trap check
+    if (formData._honey) {
+      console.warn('Spam submission detected and blocked.');
+      setStatus({ submitting: false, success: true, error: null, needsActivation: false });
+      setFormData({ name: '', email: '', message: '', _honey: '' });
       return;
     }
 
-    setStatus({ submitting: true, success: false, error: null, source: null });
-
-    const payload = {
-      name: formData.name.trim(),
-      email: formData.email.trim(),
-      subject: (formData.subject || 'General Inquiry').trim(),
-      message: formData.message.trim(),
-    };
-
-    // Tier 1: Try local Express API route (/api/contact)
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-
-      const contentType = response.headers.get('content-type') || '';
-      if (response.ok && contentType.includes('application/json')) {
-        const data = await response.json();
-        if (data.success) {
-          setSubmittedData(payload);
-          setStatus({
-            submitting: false,
-            success: true,
-            error: null,
-            source: 'local',
-          });
-          setFormData({ name: '', email: '', subject: '', message: '' });
-          return;
-        }
-      }
-    } catch (localErr) {
-      console.warn('Local API attempt unreachable, attempting FormSubmit cloud delivery...', localErr);
+    const errors = validate();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const firstErrorField = Object.keys(errors)[0];
+      const el = document.getElementById(firstErrorField);
+      if (el) el.focus();
+      return;
     }
 
-    // Tier 2: Cloud Fallback via FormSubmit AJAX (direct email to Karan's inbox)
+    setStatus({ submitting: true, success: false, error: null, needsActivation: false });
+
     try {
-      const cloudResponse = await fetch('https://formsubmit.co/ajax/vanmolekaranyadav@gmail.com', {
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+        _subject: `New Portfolio Message from ${formData.name.trim()}`,
+        _template: 'table',
+        _captcha: 'false',
+      };
+
+      const response = await fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
-        body: JSON.stringify({
-          name: payload.name,
-          email: payload.email,
-          _subject: `[Portfolio Contact] ${payload.subject} from ${payload.name}`,
-          message: payload.message,
-          _template: 'table',
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const cloudData = await cloudResponse.json();
-      if (cloudResponse.ok && (cloudData.success === 'true' || cloudData.success === true || cloudData.message)) {
-        setSubmittedData(payload);
+      const data = await response.json().catch(() => ({}));
+
+      const isActivationPending =
+        typeof data.message === 'string' &&
+        data.message.toLowerCase().includes('activation');
+
+      const isSuccess =
+        response.ok &&
+        (data.success === 'true' ||
+          data.success === true ||
+          isActivationPending);
+
+      if (isSuccess) {
         setStatus({
           submitting: false,
           success: true,
           error: null,
-          source: 'cloud',
+          needsActivation: isActivationPending,
         });
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        return;
+        setFormData({ name: '', email: '', message: '', _honey: '' });
+        setFieldErrors({});
+      } else {
+        setStatus({
+          submitting: false,
+          success: false,
+          error: 'Something went wrong. Please try again.',
+          needsActivation: false,
+        });
       }
-    } catch (cloudErr) {
-      console.error('Cloud form delivery error:', cloudErr);
+    } catch (err) {
+      console.error('Form submission network error:', err);
+      setStatus({
+        submitting: false,
+        success: false,
+        error: 'Something went wrong. Please try again.',
+        needsActivation: false,
+      });
     }
-
-    // Tier 3: Network / adblock fallback
-    setStatus({
-      submitting: false,
-      success: false,
-      error: 'Network request blocked or unavailable. Click below to launch your email client with your message pre-filled.',
-      source: null,
-    });
   };
 
   const rawPhone = portfolioData.phone.replace(/[^0-9]/g, '');
-  const mailtoFallback = `mailto:${portfolioData.email}?subject=${encodeURIComponent(
-    formData.subject || 'Portfolio Inquiry'
-  )}&body=${encodeURIComponent(
-    `Name: ${formData.name || 'Recruiter'}\nEmail: ${formData.email || ''}\n\nMessage:\n${formData.message || ''}`
-  )}`;
 
   return (
     <section id="contact" className="py-20 border-t border-surface-border-subtle">
@@ -221,182 +196,186 @@ export default function Contact() {
                 </span>
               </div>
               <p className="text-xs text-text-muted mb-6">
-                Fill in the form below. Messages are delivered directly to Karan's inbox and development ledger.
+                Fill in the form below. Messages are delivered directly to Karan's inbox at {portfolioData.email}.
               </p>
 
               {status.success ? (
-                <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500 animate-pulse">
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="p-6 sm:p-8 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center flex flex-col items-center gap-3"
+                >
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
                     <CheckCircle className="w-7 h-7" />
                   </div>
-                  <h4 className="text-lg font-bold text-text-primary">
-                    Message Sent Successfully!
+                  <h4 className="text-base sm:text-lg font-bold text-text-primary">
+                    Message sent successfully. I'll get back to you soon.
                   </h4>
-                  <p className="text-xs text-text-muted max-w-md">
-                    Thank you for reaching out. Karan has received your inquiry and will respond to{' '}
-                    <span className="font-semibold text-text-primary">{submittedData?.email}</span> promptly.
-                  </p>
-
-                  {submittedData && (
-                    <div className="w-full mt-2 p-3.5 rounded-xl bg-surface border border-surface-border text-left text-xs space-y-1">
-                      <div className="text-[11px] text-text-subtle font-mono">Message Summary:</div>
-                      <div className="font-semibold text-text-primary">
-                        {submittedData.name} &bull; <span className="text-text-muted font-normal">{submittedData.subject}</span>
-                      </div>
-                      <p className="text-text-muted italic line-clamp-2">
-                        "{submittedData.message}"
-                      </p>
-                    </div>
+                  {status.needsActivation && (
+                    <p className="text-xs text-amber-600 dark:text-amber-400 max-w-md bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 mt-1">
+                      <strong>One-time email activation:</strong> FormSubmit sent an activation email to{' '}
+                      <span className="font-mono underline">{portfolioData.email}</span>. Click the "Activate Form" link in your inbox to enable automatic delivery.
+                    </p>
                   )}
-
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      setStatus({ submitting: false, success: false, error: null, source: null });
-                      setSubmittedData(null);
-                    }}
+                    onClick={() =>
+                      setStatus({
+                        submitting: false,
+                        success: false,
+                        error: null,
+                        needsActivation: false,
+                      })
+                    }
                     className="mt-3"
                   >
                     Send Another Message
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
                   {status.error && (
-                    <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex flex-col gap-2.5 text-xs text-rose-500">
-                      <div className="flex items-start gap-2">
-                        <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                        <span>{status.error}</span>
-                      </div>
-                      <a
-                        href={mailtoFallback}
-                        className="inline-flex items-center gap-1.5 self-start px-3 py-1.5 rounded-lg bg-rose-500 text-white font-medium hover:bg-rose-600 transition-colors text-[11px]"
-                      >
-                        <Mail className="w-3.5 h-3.5" />
-                        Open in Email App
-                      </a>
+                    <div
+                      role="alert"
+                      aria-live="assertive"
+                      className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center gap-2.5 text-xs text-rose-500"
+                    >
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{status.error}</span>
                     </div>
                   )}
 
+                  {/* Honeypot Spam Trap (Hidden from real visitors) */}
+                  <div className="hidden" aria-hidden="true">
+                    <label htmlFor="_honey">Do not fill this field</label>
+                    <input
+                      type="text"
+                      id="_honey"
+                      name="_honey"
+                      value={formData._honey}
+                      onChange={handleChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
+
                   {/* Name Field */}
                   <div>
-                    <label htmlFor="name" className="block text-xs font-semibold text-text-primary mb-1">
-                      Your Name <span className="text-rose-500">*</span>
+                    <label
+                      htmlFor="name"
+                      className="block text-xs font-semibold text-text-primary mb-1.5"
+                    >
+                      Name <span className="text-rose-500" aria-hidden="true">*</span>
                     </label>
                     <input
                       id="name"
                       name="name"
                       type="text"
+                      required
                       value={formData.name}
                       onChange={handleChange}
                       placeholder=""
                       disabled={status.submitting}
-                      className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all ${
-                        fieldErrors.name ? 'border-rose-500 ring-rose-500' : 'border-surface-border'
-                      }`}
+                      aria-required="true"
                       aria-invalid={!!fieldErrors.name}
                       aria-describedby={fieldErrors.name ? 'name-error' : undefined}
+                      className={`w-full px-4 py-3 rounded-xl bg-surface-subtle border text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 ${
+                        fieldErrors.name
+                          ? 'border-rose-500 ring-1 ring-rose-500'
+                          : 'border-surface-border hover:border-surface-hover'
+                      }`}
                     />
                     {fieldErrors.name && (
-                      <p id="name-error" className="text-[11px] text-rose-500 mt-1">
-                        {fieldErrors.name}
+                      <p
+                        id="name-error"
+                        role="alert"
+                        className="text-xs text-rose-500 mt-1.5 flex items-center gap-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>{fieldErrors.name}</span>
                       </p>
                     )}
                   </div>
 
                   {/* Email Field */}
                   <div>
-                    <label htmlFor="email" className="block text-xs font-semibold text-text-primary mb-1">
-                      Email Address <span className="text-rose-500">*</span>
+                    <label
+                      htmlFor="email"
+                      className="block text-xs font-semibold text-text-primary mb-1.5"
+                    >
+                      Email <span className="text-rose-500" aria-hidden="true">*</span>
                     </label>
                     <input
                       id="email"
                       name="email"
                       type="email"
+                      required
                       value={formData.email}
                       onChange={handleChange}
                       placeholder=""
                       disabled={status.submitting}
-                      className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all ${
-                        fieldErrors.email ? 'border-rose-500 ring-rose-500' : 'border-surface-border'
-                      }`}
+                      aria-required="true"
                       aria-invalid={!!fieldErrors.email}
                       aria-describedby={fieldErrors.email ? 'email-error' : undefined}
+                      className={`w-full px-4 py-3 rounded-xl bg-surface-subtle border text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 ${
+                        fieldErrors.email
+                          ? 'border-rose-500 ring-1 ring-rose-500'
+                          : 'border-surface-border hover:border-surface-hover'
+                      }`}
                     />
                     {fieldErrors.email && (
-                      <p id="email-error" className="text-[11px] text-rose-500 mt-1">
-                        {fieldErrors.email}
+                      <p
+                        id="email-error"
+                        role="alert"
+                        className="text-xs text-rose-500 mt-1.5 flex items-center gap-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>{fieldErrors.email}</span>
                       </p>
                     )}
                   </div>
 
-                  {/* Subject Field & Quick Preset Chips */}
-                  <div>
-                    <label htmlFor="subject" className="block text-xs font-semibold text-text-primary mb-1">
-                      Subject
-                    </label>
-                    <input
-                      id="subject"
-                      name="subject"
-                      type="text"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      placeholder=""
-                      disabled={status.submitting}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border border-surface-border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all mb-2"
-                    />
-
-                    {/* Quick Selection Tags */}
-                    <div className="flex flex-wrap gap-1.5">
-                      {SUBJECT_PRESETS.map((preset) => {
-                        const isSelected = formData.subject === preset;
-                        return (
-                          <button
-                            key={preset}
-                            type="button"
-                            onClick={() => handleSelectPreset(preset)}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors border ${
-                              isSelected
-                                ? 'bg-accent text-accent-contrast border-accent'
-                                : 'bg-surface-subtle text-text-muted border-surface-border hover:border-surface-hover hover:text-text-primary'
-                            }`}
-                          >
-                            {preset}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
                   {/* Message Field */}
                   <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label htmlFor="message" className="block text-xs font-semibold text-text-primary">
-                        Message <span className="text-rose-500">*</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label
+                        htmlFor="message"
+                        className="block text-xs font-semibold text-text-primary"
+                      >
+                        Message <span className="text-rose-500" aria-hidden="true">*</span>
                       </label>
-                      <span className="text-[10px] text-text-subtle font-mono">
+                      <span className="text-[11px] text-text-subtle font-mono">
                         {formData.message.length}/2000
                       </span>
                     </div>
                     <textarea
                       id="message"
                       name="message"
-                      rows={4}
+                      rows={5}
                       maxLength={2000}
+                      required
                       value={formData.message}
                       onChange={handleChange}
                       placeholder=""
                       disabled={status.submitting}
-                      className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all resize-y ${
-                        fieldErrors.message ? 'border-rose-500 ring-rose-500' : 'border-surface-border'
-                      }`}
+                      aria-required="true"
                       aria-invalid={!!fieldErrors.message}
                       aria-describedby={fieldErrors.message ? 'message-error' : undefined}
+                      className={`w-full px-4 py-3 rounded-xl bg-surface-subtle border text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 resize-y ${
+                        fieldErrors.message
+                          ? 'border-rose-500 ring-1 ring-rose-500'
+                          : 'border-surface-border hover:border-surface-hover'
+                      }`}
                     ></textarea>
                     {fieldErrors.message && (
-                      <p id="message-error" className="text-[11px] text-rose-500 mt-1">
-                        {fieldErrors.message}
+                      <p
+                        id="message-error"
+                        role="alert"
+                        className="text-xs text-rose-500 mt-1.5 flex items-center gap-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                        <span>{fieldErrors.message}</span>
                       </p>
                     )}
                   </div>
@@ -408,17 +387,18 @@ export default function Contact() {
                     size="md"
                     loading={status.submitting}
                     disabled={status.submitting}
-                    icon={<Send className="w-4 h-4" />}
+                    icon={<ArrowUpRight className="w-4 h-4" />}
+                    iconPosition="right"
                     className="w-full mt-2"
                   >
-                    {status.submitting ? 'Sending Message...' : 'Send Message'}
+                    {status.submitting ? 'Sending...' : 'Send Message'}
                   </Button>
                 </form>
               )}
             </div>
           </div>
 
-          {/* Right Column: Direct Channels & Resume Card */}
+          {/* Right Column: Direct Channels & Verified Contacts */}
           <div className="lg:col-span-5 flex flex-col gap-4 scroll-reveal stagger-2">
             {/* Email Card with Quick Copy */}
             <div className="p-4 sm:p-5 rounded-2xl bg-surface border border-surface-border hover:border-surface-hover shadow-sm hover:shadow-card transition-all flex items-center justify-between group">
@@ -444,7 +424,7 @@ export default function Contact() {
                   type="button"
                   onClick={handleCopyEmail}
                   title="Copy email to clipboard"
-                  className="p-2 rounded-lg bg-surface-subtle hover:bg-surface-hover text-text-muted hover:text-text-primary transition-colors text-xs flex items-center gap-1"
+                  className="p-2 rounded-lg bg-surface-subtle hover:bg-surface-hover text-text-muted hover:text-text-primary transition-colors text-xs flex items-center gap-1 cursor-pointer"
                 >
                   {copiedEmail ? (
                     <>
