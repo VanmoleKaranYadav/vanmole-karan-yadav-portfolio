@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { portfolioData } from '../data/portfolio';
 import Button from '../components/Button';
-import { ArrowRight, Mail, FileText, Download, MapPin } from 'lucide-react';
+import { ArrowRight, Mail, FileText, MapPin } from 'lucide-react';
 
 export default function Hero() {
   const [imgError, setImgError] = useState(false);
@@ -49,17 +49,6 @@ export default function Hero() {
                 icon={<FileText className="w-4 h-4" />}
               >
                 My Resume
-              </Button>
-
-              <Button
-                href={portfolioData.resumePath}
-                download={portfolioData.resumeDownloadName}
-                variant="outline"
-                size="md"
-                icon={<Download className="w-4 h-4" />}
-                title="Download Vanmole-Karan-Yadav-Resume.pdf"
-              >
-                Download Resume
               </Button>
             </div>
 

@@ -12,7 +12,6 @@ import {
   CheckCircle,
   AlertCircle,
   FileText,
-  Download,
 } from 'lucide-react';
 
 export default function Contact() {
@@ -351,8 +350,8 @@ export default function Contact() {
               <ArrowUpRight className="w-4 h-4 text-text-subtle group-hover:text-text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
 
-            {/* Resume Viewer / Download Card */}
-            <div className="p-5 rounded-2xl bg-surface-subtle border border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            {/* Resume Viewer Card */}
+            <div className="p-5 rounded-2xl bg-surface-subtle border border-surface-border flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-surface border border-surface-border flex items-center justify-center text-text-primary">
                   <FileText className="w-5 h-5 text-emerald-500" />
@@ -362,31 +361,20 @@ export default function Contact() {
                     Curriculum Vitae / Resume
                   </span>
                   <span className="text-[11px] text-text-subtle font-mono">
-                    Vanmole-Karan-Yadav-Resume.pdf
+                    PDF Document (Verified)
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  href={portfolioData.resumePath}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="outline"
-                  size="sm"
-                  icon={<ArrowUpRight className="w-3.5 h-3.5" />}
-                >
-                  View
-                </Button>
-                <Button
-                  href={portfolioData.resumePath}
-                  download={portfolioData.resumeDownloadName}
-                  variant="primary"
-                  size="sm"
-                  icon={<Download className="w-3.5 h-3.5" />}
-                >
-                  Download
-                </Button>
-              </div>
+              <Button
+                href={portfolioData.resumePath}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="outline"
+                size="sm"
+                icon={<ArrowUpRight className="w-3.5 h-3.5" />}
+              >
+                Open PDF
+              </Button>
             </div>
           </div>
         </div>

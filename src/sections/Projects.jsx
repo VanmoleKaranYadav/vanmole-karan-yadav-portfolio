@@ -37,20 +37,20 @@ export default function Projects() {
                     </span>
                   </div>
 
-                  <h3 className="text-2xl sm:text-3xl font-bold text-text-primary mb-4 tracking-tight">
+                  <h3 className="text-xl sm:text-2xl font-bold text-text-primary mb-2.5 tracking-tight">
                     {project.title}
                   </h3>
 
-                  <p className="text-sm sm:text-base text-text-muted leading-relaxed mb-6">
+                  <p className="text-xs sm:text-sm text-text-muted leading-relaxed mb-4">
                     {project.desc}
                   </p>
 
                   {/* Highlights */}
                   {project.highlights && (
-                    <div className="flex flex-col gap-2 mb-6 w-full">
+                    <div className="flex flex-col gap-1.5 mb-4 w-full">
                       {project.highlights.map((item, idx) => (
-                        <div key={idx} className="flex items-start gap-2 text-xs text-text-primary">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <div key={idx} className="flex items-start gap-2 text-xs text-text-muted">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                           <span>{item}</span>
                         </div>
                       ))}
@@ -58,7 +58,7 @@ export default function Projects() {
                   )}
 
                   {/* Technologies tags */}
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  <div className="flex flex-wrap gap-1.5 mb-4">
                     {project.technologies.map((tech) => (
                       <span
                         key={tech}
