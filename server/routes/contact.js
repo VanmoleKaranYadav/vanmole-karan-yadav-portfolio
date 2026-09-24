@@ -14,6 +14,11 @@ const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 5;
 
 function checkRateLimit(ip) {
+  // Allow unlimited or higher quota for local development
+  if (ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1' || ip === 'localhost') {
+    return true;
+  }
+
   const now = Date.now();
   const entry = rateLimits.get(ip) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
 
@@ -24,7 +29,7 @@ function checkRateLimit(ip) {
     return true;
   }
 
-  if (entry.count >= MAX_REQUESTS_PER_WINDOW) {
+  if (entry.count >= 20) {
     return false;
   }
 
