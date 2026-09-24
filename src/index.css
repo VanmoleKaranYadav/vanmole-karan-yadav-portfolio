@@ -43,6 +43,10 @@
     font-size: 16px;
   }
 
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
   body {
     background-color: var(--color-bg);
     color: var(--color-text);
