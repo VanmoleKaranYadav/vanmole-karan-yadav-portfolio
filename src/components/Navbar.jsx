@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { portfolioData } from '../data/portfolio';
-import { Sun, Moon, FileText, Menu, X, ArrowUpRight } from 'lucide-react';
+import { Sun, Moon, FileText, Menu, X, ArrowUpRight, Download } from 'lucide-react';
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
@@ -167,17 +167,30 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Resume button */}
-          <a
-            href={portfolioData.resumePath}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-accent text-accent-contrast hover:opacity-90 transition-all shadow-sm"
-          >
-            <FileText className="w-3.5 h-3.5" />
-            <span>Resume</span>
-            <ArrowUpRight className="w-3 h-3 opacity-70" />
-          </a>
+          {/* Resume buttons */}
+          <div className="flex items-center gap-1.5">
+            <a
+              href={portfolioData.resumePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-accent text-accent-contrast hover:opacity-90 transition-all shadow-sm"
+              title="Open Resume PDF in new tab"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Resume</span>
+              <ArrowUpRight className="w-3 h-3 opacity-70" />
+            </a>
+
+            <a
+              href={portfolioData.resumePath}
+              download={portfolioData.resumeDownloadName}
+              className="p-1.5 rounded-lg border border-surface-border bg-surface-subtle text-text-muted hover:text-text-primary hover:bg-surface transition-all shadow-sm"
+              title="Download Vanmole-Karan-Yadav-Resume.pdf"
+              aria-label="Download Resume PDF"
+            >
+              <Download className="w-3.5 h-3.5" />
+            </a>
+          </div>
         </div>
 
         {/* Mobile controls */}
@@ -244,7 +257,7 @@ export default function Navbar() {
               );
             })}
 
-            <div className="pt-2 border-t border-surface-border flex items-center justify-between mt-2">
+            <div className="pt-2 border-t border-surface-border flex flex-col gap-2 mt-2">
               <a
                 href={portfolioData.resumePath}
                 target="_blank"
@@ -254,6 +267,15 @@ export default function Navbar() {
                 <FileText className="w-3.5 h-3.5" />
                 <span>Open Resume PDF</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+
+              <a
+                href={portfolioData.resumePath}
+                download={portfolioData.resumeDownloadName}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-surface border border-surface-border text-text-primary hover:bg-surface-subtle w-full justify-center shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download Resume (PDF)</span>
               </a>
             </div>
           </div>

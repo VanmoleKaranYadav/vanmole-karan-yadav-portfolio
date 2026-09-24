@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { portfolioData } from '../data/portfolio';
 import Button from '../components/Button';
-import { ArrowRight, Mail, FileText, ExternalLink, MapPin } from 'lucide-react';
+import { ArrowRight, Mail, FileText, Download, MapPin } from 'lucide-react';
 
 export default function Hero() {
   const [imgError, setImgError] = useState(false);
@@ -54,7 +54,18 @@ export default function Hero() {
                 size="md"
                 icon={<FileText className="w-4 h-4" />}
               >
-                Resume
+                My Resume
+              </Button>
+
+              <Button
+                href={portfolioData.resumePath}
+                download={portfolioData.resumeDownloadName}
+                variant="outline"
+                size="md"
+                icon={<Download className="w-4 h-4" />}
+                title="Download Vanmole-Karan-Yadav-Resume.pdf"
+              >
+                Download Resume
               </Button>
             </div>
 
@@ -75,19 +86,19 @@ export default function Hero() {
           <div className="lg:col-span-5 flex justify-center lg:justify-end">
             <div className="relative group">
               {/* Outer decorative ring */}
-              <div className="absolute -inset-1.5 rounded-2xl bg-gradient-to-tr from-surface-border via-accent/20 to-surface-border opacity-70 group-hover:opacity-100 transition-opacity blur-sm"></div>
+              <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-surface-border via-accent/20 to-surface-border opacity-70 group-hover:opacity-100 transition-opacity blur-sm"></div>
 
-              {/* Card Container */}
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-2xl bg-surface border border-surface-border p-2 shadow-elevated flex flex-col items-center justify-center overflow-hidden">
+              {/* Circular Card Container */}
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 aspect-square rounded-full bg-surface border-2 border-surface-border p-2 shadow-elevated flex items-center justify-center overflow-hidden">
                 {!imgError ? (
                   <img
                     src={portfolioData.profileImagePath}
                     alt="Vanmole Karan Yadav"
-                    className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-cover rounded-full transition-transform duration-300 group-hover:scale-105"
                     onError={() => setImgError(true)}
                   />
                 ) : (
-                  <div className="w-full h-full rounded-xl bg-surface-subtle flex flex-col items-center justify-center">
+                  <div className="w-full h-full rounded-full bg-surface-subtle flex flex-col items-center justify-center">
                     <span className="text-5xl font-mono font-bold tracking-tight text-text-primary">
                       VK
                     </span>
@@ -96,7 +107,6 @@ export default function Hero() {
                     </span>
                   </div>
                 )}
-
               </div>
             </div>
           </div>

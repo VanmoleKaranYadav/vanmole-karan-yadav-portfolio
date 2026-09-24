@@ -12,6 +12,7 @@ import {
   CheckCircle,
   AlertCircle,
   FileText,
+  Download,
 } from 'lucide-react';
 
 export default function Contact() {
@@ -159,7 +160,7 @@ export default function Contact() {
                       type="text"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="e.g. Alex Johnson"
+                      placeholder=""
                       disabled={status.submitting}
                       className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all ${
                         fieldErrors.name ? 'border-rose-500 ring-rose-500' : 'border-surface-border'
@@ -185,7 +186,7 @@ export default function Contact() {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="alex@company.com"
+                      placeholder=""
                       disabled={status.submitting}
                       className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all ${
                         fieldErrors.email ? 'border-rose-500 ring-rose-500' : 'border-surface-border'
@@ -211,7 +212,7 @@ export default function Contact() {
                       type="text"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder="Software Developer Opportunity / Collaboration"
+                      placeholder=""
                       disabled={status.submitting}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border border-surface-border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all"
                     />
@@ -228,7 +229,7 @@ export default function Contact() {
                       rows={4}
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Hi Karan, I came across your portfolio and would love to connect regarding..."
+                      placeholder=""
                       disabled={status.submitting}
                       className={`w-full px-3.5 py-2.5 rounded-xl bg-surface-subtle border text-xs sm:text-sm text-text-primary placeholder:text-text-subtle focus:outline-none focus:ring-2 focus:ring-accent transition-all resize-y ${
                         fieldErrors.message ? 'border-rose-500 ring-rose-500' : 'border-surface-border'
@@ -351,7 +352,7 @@ export default function Contact() {
             </a>
 
             {/* Resume Viewer / Download Card */}
-            <div className="p-5 rounded-2xl bg-surface-subtle border border-surface-border flex items-center justify-between">
+            <div className="p-5 rounded-2xl bg-surface-subtle border border-surface-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-surface border border-surface-border flex items-center justify-center text-text-primary">
                   <FileText className="w-5 h-5 text-emerald-500" />
@@ -360,21 +361,32 @@ export default function Contact() {
                   <span className="text-xs font-semibold text-text-primary block">
                     Curriculum Vitae / Resume
                   </span>
-                  <span className="text-[11px] text-text-subtle">
-                    PDF Document (Verified)
+                  <span className="text-[11px] text-text-subtle font-mono">
+                    Vanmole-Karan-Yadav-Resume.pdf
                   </span>
                 </div>
               </div>
-              <Button
-                href={portfolioData.resumePath}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="outline"
-                size="sm"
-                icon={<ArrowUpRight className="w-3.5 h-3.5" />}
-              >
-                Open PDF
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  href={portfolioData.resumePath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="outline"
+                  size="sm"
+                  icon={<ArrowUpRight className="w-3.5 h-3.5" />}
+                >
+                  View
+                </Button>
+                <Button
+                  href={portfolioData.resumePath}
+                  download={portfolioData.resumeDownloadName}
+                  variant="primary"
+                  size="sm"
+                  icon={<Download className="w-3.5 h-3.5" />}
+                >
+                  Download
+                </Button>
+              </div>
             </div>
           </div>
         </div>
