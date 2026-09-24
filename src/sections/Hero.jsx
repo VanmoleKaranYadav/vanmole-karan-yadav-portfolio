@@ -12,12 +12,6 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column: Text & CTAs */}
           <div className="lg:col-span-7 flex flex-col items-start">
-            {/* Status Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-subtle border border-surface-border text-xs font-mono text-text-primary mb-6 shadow-subtle">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>{portfolioData.status}</span>
-            </div>
-
             {/* Sub-headline / Eyebrow */}
             <p className="text-xs uppercase tracking-widest font-mono font-semibold text-text-subtle mb-3">
               {portfolioData.degreeBadge}

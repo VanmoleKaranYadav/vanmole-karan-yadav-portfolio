@@ -89,9 +89,8 @@ export default function Navbar() {
             <span className="text-sm font-semibold tracking-tight text-text-primary leading-tight">
               Karan Yadav
             </span>
-            <span className="text-[10px] font-mono text-emerald-500 font-medium flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Available for work
+            <span className="text-[10px] font-mono text-text-subtle font-medium">
+              Software Developer
             </span>
           </div>
         </a>
